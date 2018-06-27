@@ -14,3 +14,7 @@ mtprotoproxy_secrets:
   - [user2, 00000000000000000000000000000002]
 ```
 
+* mtprotoproxy_ad_tag is optional, if you don't need sponsored channel, then you can just skip it.  
+* mtprotoproxy_branch is set to stable by default (master in example)    
+* mtprotoproxy_port should be set to port >1024 since mtprotoproxy will be working from "nobody" user and only root can use ports below 1024
+* mrprotoproxy_secrets can have any numbers of users, but should have at least 1  
