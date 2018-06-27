@@ -1,0 +1,48 @@
+- name: Add OS specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "vars/{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
+    - "vars/{{ ansible_distribution }}.yml"
+    - "vars/{{ ansible_os_family }}.yml"
+    - "vars/defaults.yml"
+
+- name: install mtprotoproxy dependencies
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ mtprotoproxy_dependencies }}"
+
+- name: 'clone mtprotoproxy'
+  git:
+    repo: https://github.com/alexbers/mtprotoproxy.git
+    dest: /opt/mtprotoproxy
+    version: "{{ mtprotoproxy_branch }}"
+    update: yes
+  register: mtprotoproxy_repo
+
+- name: "Install config"
+  template:
+    src: config.py.j2
+    dest: /opt/mtprotoproxy/mtprotoproxy-config.py
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - "restart mtprotoproxy"
+
+- name: "install systemd service"
+  template:
+    src: mtprotoproxy.service.j2
+    dest: /etc/systemd/system/mtprotoproxy.service
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - "reload systemd"
+    - "restart mtprotoproxy"
+
+- name: 'restart mtprotoproxy if repo has changed'
+  service:
+    name: mtprotoproxy
+    state: restarted
+  when: mtprotoproxy_repo.changed

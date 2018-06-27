@@ -1,0 +1,8 @@
+- name: "restart mtprotoproxy"
+  service:
+    name: mtprotoproxy
+    state: restarted
+
+- name: "reload systemd"
+  systemd:
+    daemon_reload: yes

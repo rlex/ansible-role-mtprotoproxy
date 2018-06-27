@@ -1,0 +1,12 @@
+PORT = {{ mtprotoproxy_port }}
+
+# name -> secret (32 hex chars)
+USERS = {
+{% for secret in mtprotoproxy_secrets %}
+    "{{ secret.0 }}": "{{ secret.1 }}",
+{% endfor %}
+}
+
+{% if mtprotoproxy_ad_tag is defined %}
+AD_TAG = "{{ mtprotoproxy_ad_tag }}"
+{% endif %}
