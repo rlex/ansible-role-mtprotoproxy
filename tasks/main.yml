@@ -10,7 +10,7 @@
   package:
     name: "{{ item }}"
     state: present
-  with_items: "{{ mtprotoproxy_dependencies }}"
+  loop: "{{ mtprotoproxy_dependencies }}"
 
 - name: 'clone mtprotoproxy'
   git:
